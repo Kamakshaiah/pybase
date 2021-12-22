@@ -85,7 +85,11 @@ def insert_column(table, col_name=None, col=[], print_table=True):
         print(table) 
     return table
 
-
+def select_data(tbl_name):
+    ''' shows the data inside the arg:table '''
+    table = pd.read_csv(f'{tbl_name}.csv')
+    print(table)
+    
 def commit_table(table, json=False):
     ''' commits changes to table arg:table_name is pandas table '''
     file_name = os.path.join(path, table.name+'.csv')
@@ -96,8 +100,24 @@ def commit_table(table, json=False):
     else:
         table.to_csv(pout)
 
+def alter_table(table, by=None, replace=[], with_values=[], commit=True):
+    ''' alter data in table '''
+    table[by] = table[by].replace(replace, with_values)
+    if commit==True:
+        commit_table(table)
+    else:
+        print(table)
+
+def alter_data_value(table, with_value=None, for_value=None, commit=True):
+    ''' alter a single value '''
+    table.replace(for_value, with_value)
+    if commit==True:
+        commit_table(table)
+    else:
+        print(table)
 
 if __name__ == "__main__":
+    import random
 
 ##    print(path)
 ##    part 1: administration/management
@@ -122,12 +142,15 @@ if __name__ == "__main__":
     table = insert_row(table, values=[1, 2, 3, 4, 5], print_table=False)
     table = insert_row(table, values=[1, 2, 3, 4, 5], print_table=False)
     table = insert_row(table, values=[1, 2, 3, 4, 5], print_table=False)
-    table = insert_row(table, values=[1, 2, 3, 4, 5], print_table=True)
+    table = insert_row(table, values=[1, 2, 3, 4, 5], print_table=False)
     commit_table(table, json=False)
-
-    show_tables(ttype='json')
-
-    some_col = []
-    for i in range(len(table)):
-        some_col.append(i)
-    insert_column(table, col_name='c5', col=some_col, print_table=True)
+##
+##    show_tables(ttype='json')
+##
+##    some_col = []
+##    for i in range(len(table)):
+##        some_col.append(i)
+##    insert_column(table, col_name='c5', col=some_col, print_table=True)
+##    select_data('table')
+##    alter_table(table, by='c0', replace=[1, 1, 1, 1], with_values=[1, 2, 3, 4])
+    alter_data_value(table, with_value=random.randint(1, 5), for_value=1, commit=False)
